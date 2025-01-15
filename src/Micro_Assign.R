@@ -8,39 +8,39 @@ library(readr) # for write_csv (within extrar_divmetrics function)
 
 # 1. Unassigned ASV exploration ####
 
-Micro_2023 <- read.csv("data/Micro_2023.csv", fileEncoding = "latin1", na.strings = c("", "NA"))
-  
-Micro_2023 <- Micro_2023 %>% # Transpose data frame
-        pivot_longer(cols = starts_with("M"), # Transposing will be applied only to sample name (M___) columns
-                     names_to = "Sample",      # Transposed columnes are named "Sample"
-                     values_to = "Abundance") # All values from transposed columns go to an "Abundance" column
-
-Sample_info <- read.csv("data/Sample_info.csv", fileEncoding = "latin1", na.strings = c("", "NA")) # Importing Sample information
-
-Micro_2023 <- Micro_2023 %>% 
-        left_join(Sample_info, by = "Sample") # Including sample information
-  
-Micro_2023 <- Micro_2023 %>%   
-        filter(!Sampling %in% c(5, 6)) %>%  # Samplings 5 and 6 dropped as they were collected during Fallow Season.
-        filter(Abundance != 0) # Remove all rows with 0 Abundance
-
-# Checking weight of non assigned Taxonomy:
-filter(Micro_2023, Abundance > 0, grepl("^unclassified", Class)) %>%  nrow() # rows where Class = "unclassified..." = 5661 (1.63%)
-filter(Micro_2023, Abundance > 0, grepl("^uncultured", Class)) %>%  nrow() # rows where Class = "uncultured..." = 0
-filter(Micro_2023, Abundance > 0, grepl("^unclassified", Order)) %>%  nrow() # rows where Order = "unclassified..." = 22439 (6.46%)
-filter(Micro_2023, Abundance > 0, grepl("^uncultured", Order)) %>%  nrow() # rows where Order = "uncultured..." = 885 (0.25%)
-filter(Micro_2023, Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 58131 (16.75%)
-filter(Micro_2023, Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "uncultured..." = 26001 (7.49%) 
-filter(Micro_2023, Abundance > 0, grepl("^unclassified", Genus)) %>%  nrow() # rows where Genus = "unclassified..." = 177569 (51.19%) 
-filter(Micro_2023, Abundance > 0, grepl("^uncultured", Genus)) %>%  nrow() # rows where Genus = "uncultured..." = 33983 (9.79%) 
-
-# Checking weight of non assigned Family per Treat:
-filter(Micro_2023, Treat == "CON", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 18667 (%)
-filter(Micro_2023, Treat == "MSD", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 19164 (%)
-filter(Micro_2023, Treat == "AWD", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 20300 (%)
-filter(Micro_2023, Treat == "CON", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8528 (%)
-filter(Micro_2023, Treat == "MSD", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8591 (%)
-filter(Micro_2023, Treat == "AWD", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8882 (%)
+# Micro_2023 <- read.csv("data/Micro_2023.csv", fileEncoding = "latin1", na.strings = c("", "NA"))
+#   
+# Micro_2023 <- Micro_2023 %>% # Transpose data frame
+#         pivot_longer(cols = starts_with("M"), # Transposing will be applied only to sample name (M___) columns
+#                      names_to = "Sample",      # Transposed columnes are named "Sample"
+#                      values_to = "Abundance") # All values from transposed columns go to an "Abundance" column
+# 
+# Sample_info <- read.csv("data/Sample_info.csv", fileEncoding = "latin1", na.strings = c("", "NA")) # Importing Sample information
+# 
+# Micro_2023 <- Micro_2023 %>% 
+#         left_join(Sample_info, by = "Sample") # Including sample information
+#   
+# Micro_2023 <- Micro_2023 %>%   
+#         filter(!Sampling %in% c(5, 6)) %>%  # Samplings 5 and 6 dropped as they were collected during Fallow Season.
+#         filter(Abundance != 0) # Remove all rows with 0 Abundance
+# 
+# # Checking weight of non assigned Taxonomy:
+# filter(Micro_2023, Abundance > 0, grepl("^unclassified", Class)) %>%  nrow() # rows where Class = "unclassified..." = 5661 (1.63%)
+# filter(Micro_2023, Abundance > 0, grepl("^uncultured", Class)) %>%  nrow() # rows where Class = "uncultured..." = 0
+# filter(Micro_2023, Abundance > 0, grepl("^unclassified", Order)) %>%  nrow() # rows where Order = "unclassified..." = 22439 (6.46%)
+# filter(Micro_2023, Abundance > 0, grepl("^uncultured", Order)) %>%  nrow() # rows where Order = "uncultured..." = 885 (0.25%)
+# filter(Micro_2023, Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 58131 (16.75%)
+# filter(Micro_2023, Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "uncultured..." = 26001 (7.49%) 
+# filter(Micro_2023, Abundance > 0, grepl("^unclassified", Genus)) %>%  nrow() # rows where Genus = "unclassified..." = 177569 (51.19%) 
+# filter(Micro_2023, Abundance > 0, grepl("^uncultured", Genus)) %>%  nrow() # rows where Genus = "uncultured..." = 33983 (9.79%) 
+# 
+# # Checking weight of non assigned Family per Treat:
+# filter(Micro_2023, Treat == "CON", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 18667 (%)
+# filter(Micro_2023, Treat == "MSD", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 19164 (%)
+# filter(Micro_2023, Treat == "AWD", Abundance > 0, grepl("^unclassified", Family)) %>%  nrow() # rows where Family = "unclassified..." = 20300 (%)
+# filter(Micro_2023, Treat == "CON", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8528 (%)
+# filter(Micro_2023, Treat == "MSD", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8591 (%)
+# filter(Micro_2023, Treat == "AWD", Abundance > 0, grepl("^uncultured", Family)) %>%  nrow() # rows where Family = "unclassified..." = 8882 (%)
 
 # 2. Diversity at ASV level ####
 
